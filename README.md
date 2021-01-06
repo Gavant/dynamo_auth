@@ -1,0 +1,1 @@
+A small package oauth package using authlib and flywheel. Replaces some authlib sqlalchemy mixins with dynamodb classes
