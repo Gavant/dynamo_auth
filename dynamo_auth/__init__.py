@@ -46,12 +46,12 @@ from .models import OAuth2DynamoToken, OAuth2DynamoClient
 class Dynamo():
     engine = Engine()
 
-    def init_engine(self, dy_host, dy_port, dy_region, use_local, local_port=8000, create_tables=False):
+    def init_engine(self, dy_region, use_local, local_port=8000, create_tables=False):
         # Create an engine and connect to an AWS region
         if use_local:
             self.engine.connect(host='localhost', port=local_port, region='us-east-1', is_secure=False)
         else:
-            self.engine.connect(host=dy_host, port=dy_port, region=dy_region, is_secure=False)
+            self.engine.connect(region=dy_region, is_secure=False)
 
         # Register our models with the engine so it can create the Dynamo table
         self.engine.register(OAuth2DynamoToken)
