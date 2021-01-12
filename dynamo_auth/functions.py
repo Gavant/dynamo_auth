@@ -29,6 +29,20 @@ def dynamo_create_query_client_func(dynamo):
         return dynamo.get_client(client_id)
     return query_client
 
+def dynamo_create_bearer_token_validator(dynamo):
+    """Token validator"""
+    from authlib.oauth2.rfc6750 import BearerTokenValidator
+    class _BearerTokenValidator(BearerTokenValidator):
+        def authenticate_token(self, token_string):
+            return dynamo.get_token(token_string)
+
+        def request_invalid(self, request):
+            return False
+
+        def token_revoked(self, token):
+            return token.revoked
+
+    return _BearerTokenValidator
 
 def dynamo_create_revocation_endpoint(dynamo):
     """Create a revocation endpoint class"""

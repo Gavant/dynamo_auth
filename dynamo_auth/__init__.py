@@ -49,21 +49,21 @@ class Dynamo():
     def save_client(self, client):
         self.engine.save(client)
  
-    def create_client(self, c_id="CLIENT_ID", c_secret="secret"):
-        client_id = c_id
+    def create_client(self, client_id="CLIENT_ID", client_secret="secret", client_metadata=None)
         client_id_issued_at = int(time.time())
         client = OAuth2DynamoClient(
             client_id=client_id,
             client_id_issued_at=client_id_issued_at
         )
 
-        client_metadata = {
-            "client_name": "Client Name",
-            "grant_types": ["password", "refresh_token"],
-            "scope": "profile",
-            "token_endpoint_auth_method": "client_secret_basic"
-        }
+        if not client_metadata:
+            client_metadata = {
+                "client_name": "Client Name",
+                "grant_types": ["password", "refresh_token"],
+                "scope": "profile",
+                "token_endpoint_auth_method": "client_secret_basic"
+            }
         client.set_client_metadata(client_metadata)
-        client.client_secret = c_secret
+        client.client_secret = client_secret
 
         self.save_client(client)
