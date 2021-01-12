@@ -49,7 +49,7 @@ class Dynamo():
     def save_client(self, client):
         self.engine.save(client)
  
-    def create_client(self, client_id="CLIENT_ID", client_secret="secret", client_metadata=None)
+    def create_client(self, client_id="CLIENT_ID", client_secret="secret", client_metadata=None):
         client_id_issued_at = int(time.time())
         client = OAuth2DynamoClient(
             client_id=client_id,
