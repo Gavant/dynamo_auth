@@ -13,17 +13,17 @@ class Dynamo():
         else:
             self.engine.connect(region=dy_region, is_secure=False)
 
-        # Register our models with the engine so it can create the Dynamo table
+        # Register models with the engine so it can create the Dynamo table
         self.engine.register(OAuth2DynamoToken)
         self.engine.register(OAuth2DynamoClient)
 
-        # Create the dynamo table for our registered model
+        # Create the dynamo tables
         if create_tables:
+            self.engine.delete_schema()
             self.engine.create_schema()
             self.create_client()
 
     def save_token(self, token):
-        print("saving token " + str(token.get_expires_in()))
         self.engine.save(token)
 
     def get_token(self, _access_token):
@@ -40,14 +40,13 @@ class Dynamo():
         else:
             return token
 
-    def delete_token(self, _user_id, _client_id):
-        self.engine.delete_key(OAuth2DynamoToken, user_id=_user_id, client_id=_client_id)
+    def delete_token(self, _access_token):
+        self.engine.delete_key(OAuth2DynamoToken, access_token=_access_token)
 
     def get_client(self, _client_id):
         return self.engine.get(OAuth2DynamoClient, client_id=_client_id)
 
     def save_client(self, client):
-        print("saving client id: " + str(client.client_id))
         self.engine.save(client)
  
     def create_client(self, c_id="CLIENT_ID", c_secret="secret"):
@@ -60,10 +59,7 @@ class Dynamo():
 
         client_metadata = {
             "client_name": "Client Name",
-            "client_uri": "https://authlib.org/",
             "grant_types": ["password", "refresh_token"],
-            "redirect_uris": ["https://authlib.org/"],
-            "response_types": ["response_type", "code"],
             "scope": "profile",
             "token_endpoint_auth_method": "client_secret_basic"
         }

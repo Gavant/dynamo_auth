@@ -1,6 +1,6 @@
 import time
 
-def dynamo_create_save_token_func(dynamo, token_model, expire_time):
+def dynamo_create_save_token_func(dynamo, token_model):
     def save_token(token, request):
         if request.user:
             user_id = request.user.get_user_id()
@@ -13,7 +13,7 @@ def dynamo_create_save_token_func(dynamo, token_model, expire_time):
             issued_at= int(time.time()),
             token_type= token["token_type"],
             access_token= token["access_token"],
-            expires_in= int(expire_time),
+            expires_in= token["expires_in"],
             refresh_token= token["refresh_token"],
             scope= token["scope"]
         )

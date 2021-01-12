@@ -1,5 +1,5 @@
 import time
-from flywheel import Model, Field, STRING, NUMBER
+from flywheel import Model, GlobalIndex, Field, STRING, NUMBER
 
 #for client
 from werkzeug.utils import cached_property
@@ -9,6 +9,12 @@ from authlib.oauth2.rfc6749.util import scope_to_list, list_to_scope
 
 
 class OAuth2DynamoToken(Model):
+    __metadata__ = {
+        'global_indexes': [
+            GlobalIndex.all('refresh-index', 'refresh_token').throughput(read=10, write=2)
+        ],
+    }
+
     client_id = Field(type=STRING)
     user_id = Field(type=NUMBER)
     token_type = Field(type=STRING)
