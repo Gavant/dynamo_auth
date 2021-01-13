@@ -9,7 +9,7 @@ class Dynamo():
     def init_engine(self, dy_region, use_local, local_port=8000, create_tables=False, client_id="CLIENT_ID", client_secret="secret", client_metadata=None):
         # Create an engine and connect to an AWS region
         if use_local:
-            self.engine.connect(host='localhost', port=local_port, is_secure=False)
+            self.engine.connect(host='localhost', port=local_port, region='', is_secure=False)
         else:
             self.engine.connect(region=dy_region, is_secure=False)
 
