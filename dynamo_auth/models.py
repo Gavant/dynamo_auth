@@ -4,11 +4,11 @@ from flywheel import Model, GlobalIndex, Field, STRING, NUMBER
 #for client
 from werkzeug.utils import cached_property
 from authlib.common.encoding import json_loads, json_dumps
-# from authlib.oauth2.rfc6749 import ClientMixin
 from authlib.oauth2.rfc6749.util import scope_to_list, list_to_scope
 
 
 class OAuth2DynamoToken(Model):
+    """ Dynamo version of authlib.integrations.sqla_oauth2.OAuth2TokenMixin """
     __metadata__ = {
         'global_indexes': [
             GlobalIndex.all('refresh-index', 'refresh_token').throughput(read=10, write=2)
@@ -46,7 +46,7 @@ class OAuth2DynamoToken(Model):
 
 
 class OAuth2DynamoClient(Model):
-    """ Dynamo Implementation of Authlib's  OAuth 2 Client """
+     """ Dynamo version of authlib.integrations.sqla_oauth2.OAuth2ClientMixin """
     client_id = Field(type=STRING, hash_key=True)
     client_secret = Field(type=STRING)
     _client_metadata = Field(type=STRING)

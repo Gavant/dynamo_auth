@@ -1,6 +1,7 @@
 import time
 
 def dynamo_create_save_token_func(dynamo, token_model):
+    """ dynamo save_token function for authlib.integrations.flask_oauth2.AuthorizationServer's save_token param """
     def save_token(token, request):
         if request.user:
             user_id = request.user.get_user_id()
@@ -22,15 +23,14 @@ def dynamo_create_save_token_func(dynamo, token_model):
 
 
 def dynamo_create_query_client_func(dynamo):
-    """Create an ``query_client`` function that can be used in authorization
-    server.
-    """
+    """ dynamo query_client for authlib.integrations.flask_oauth2.AuthorizationServer's query_client """
+
     def query_client(client_id):
         return dynamo.get_client(client_id)
     return query_client
 
 def dynamo_create_bearer_token_validator(dynamo):
-    """Token validator"""
+    """Token validator. dynamo version of authlib.oauth2.rfc6750.BearerTokenValidator"""
     from authlib.oauth2.rfc6750 import BearerTokenValidator
     class _BearerTokenValidator(BearerTokenValidator):
         def authenticate_token(self, token_string):
@@ -45,7 +45,7 @@ def dynamo_create_bearer_token_validator(dynamo):
     return _BearerTokenValidator
 
 def dynamo_create_revocation_endpoint(dynamo):
-    """Create a revocation endpoint class"""
+    """ dynamo version of revocation endpoint class from uthlib.oauth2.rfc7009.RevocationEndpoint"""
     from authlib.oauth2.rfc7009 import RevocationEndpoint
 
     class _RevocationEndpoint(RevocationEndpoint):
