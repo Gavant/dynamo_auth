@@ -46,7 +46,7 @@ class OAuth2DynamoToken(Model):
 
 
 class OAuth2DynamoClient(Model):
-     """ Dynamo version of authlib.integrations.sqla_oauth2.OAuth2ClientMixin """
+    """ Dynamo version of authlib.integrations.sqla_oauth2.OAuth2ClientMixin """
     client_id = Field(type=STRING, hash_key=True)
     client_secret = Field(type=STRING)
     _client_metadata = Field(type=STRING)
