@@ -6,7 +6,7 @@ from .models import OAuth2DynamoToken, OAuth2DynamoClient
 class Dynamo():
     engine = Engine()
 
-    def init_engine(self, dy_region, use_local, local_port=8000, create_tables=False):
+    def init_engine(self, dy_region, use_local, local_port=8000, create_tables=False, client_id="CLIENT_ID", client_secret="secret", client_metadata=None):
         # Create an engine and connect to an AWS region
         if use_local:
             self.engine.connect(host='localhost', port=local_port, region='us-east-1', is_secure=False)
@@ -21,7 +21,7 @@ class Dynamo():
         if create_tables:
             self.engine.delete_schema()
             self.engine.create_schema()
-            self.create_client()
+            self.create_client(client_id, client_secret, client_metadata)
 
     def save_token(self, token):
         self.engine.save(token)
