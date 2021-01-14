@@ -8,6 +8,11 @@ from authlib.oauth2.rfc6749.util import scope_to_list, list_to_scope
 
 class DynamoPasswordResetToken(Model):
     """ Token used to verify a user's password reset request """
+    def __init__(self, user_id, reset_code):
+        self.user_id = user_id
+        self.reset_code = reset_code
+        super().__init__()
+
     user_id = Field(type=STRING, range_key=True)
     reset_code = Field(type=STRING, hash_key=True)
 
