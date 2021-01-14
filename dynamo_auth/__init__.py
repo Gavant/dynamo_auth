@@ -1,7 +1,7 @@
 import time
 from authlib.oauth2.rfc6750 import InvalidTokenError
 from flywheel import Engine
-from .models import OAuth2DynamoToken, OAuth2DynamoClient
+from .models import OAuth2DynamoToken, OAuth2DynamoClient, DynamoPasswordResetToken
 
 class Dynamo():
     engine = Engine()
@@ -16,6 +16,7 @@ class Dynamo():
         # Register models with the engine so it can create the Dynamo table
         self.engine.register(OAuth2DynamoToken)
         self.engine.register(OAuth2DynamoClient)
+        self.engine.register(DynamoPasswordResetToken)
 
         # Create the dynamo tables
         if create_tables:
@@ -23,6 +24,7 @@ class Dynamo():
             self.engine.create_schema()
             self.create_client(client_id, client_secret, client_metadata)
 
+    # token functions
     def save_token(self, token):
         self.engine.save(token)
 
@@ -34,15 +36,17 @@ class Dynamo():
             return token
     
     def get_token_by_refresh(self, _refresh_token):
-        token = self.engine.query(OAuth2DynamoToken).filter(OAuth2DynamoToken.refresh_token == _refresh_token).one()
+        token = self.engine.query(OAuth2DynamoToken).filter(OAuth2DynamoToken.refresh_token == _refresh_token).index('refresh-index').one()
         if not token:
             raise InvalidTokenError()
         else:
-            return token
+            # refresh gets fields not projected by index
+            return token.refresh()
 
     def delete_token(self, _access_token):
         self.engine.delete_key(OAuth2DynamoToken, access_token=_access_token)
 
+    # client functions
     def get_client(self, _client_id):
         return self.engine.get(OAuth2DynamoClient, client_id=_client_id)
 
@@ -67,3 +71,17 @@ class Dynamo():
         client.client_secret = client_secret
 
         self.save_client(client)
+
+    # password token functions
+    def save_pw_token(self, token):
+        self.engine.save(token)
+
+    def get_pw_token(self, user_id, reset_code):
+        token = self.engine.get(DynamoPasswordResetToken, user_id=user_id, reset_code=reset_code)
+        if not token:
+            raise InvalidTokenError()
+        else:
+            return token
+
+    def delete_pw_token(self, user_id, reset_code):
+        self.engine.delete_key(DynamoPasswordResetToken, user_id=user_id, reset_code=reset_code)

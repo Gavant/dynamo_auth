@@ -6,12 +6,16 @@ from werkzeug.utils import cached_property
 from authlib.common.encoding import json_loads, json_dumps
 from authlib.oauth2.rfc6749.util import scope_to_list, list_to_scope
 
+class DynamoPasswordResetToken(Model):
+    """ Token used to verify a user's password reset request """
+    user_id = Field(type=STRING, range_key=True)
+    reset_code = Field(type=STRING, hash_key=True)
 
 class OAuth2DynamoToken(Model):
     """ Dynamo version of authlib.integrations.sqla_oauth2.OAuth2TokenMixin """
     __metadata__ = {
         'global_indexes': [
-            GlobalIndex.all('refresh-index', 'refresh_token').throughput(read=10, write=2)
+            GlobalIndex.keys('refresh-index', 'refresh_token').throughput(read=10, write=2)
         ],
     }
 
