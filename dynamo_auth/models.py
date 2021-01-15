@@ -13,7 +13,7 @@ class DynamoPasswordResetToken(Model):
         self.reset_code = reset_code
         super().__init__()
 
-    user_id = Field(type=STRING, range_key=True)
+    user_id = Field(type=NUMBER, range_key=True)
     reset_code = Field(type=STRING, hash_key=True)
 
 class OAuth2DynamoToken(Model):
