@@ -16,7 +16,7 @@ def dynamo_create_save_token_func(dynamo, token_model):
             access_token= token["access_token"],
             expires_in= token["expires_in"],
             refresh_token= token["refresh_token"],
-            scope= token["scope"]
+            scope= token["scope"] if "scope" in token else ""
         )
         dynamo.save_token(item)
     return save_token
