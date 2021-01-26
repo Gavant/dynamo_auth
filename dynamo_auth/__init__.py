@@ -41,7 +41,8 @@ class Dynamo():
             raise InvalidTokenError()
         else:
             # refresh gets fields not projected by index
-            return token.refresh()
+            token.refresh()
+            return token
 
     def delete_token(self, _access_token):
         self.engine.delete_key(OAuth2DynamoToken, access_token=_access_token)
