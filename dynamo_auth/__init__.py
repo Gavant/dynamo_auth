@@ -43,7 +43,20 @@ class Dynamo():
             # refresh gets fields not projected by index
             token.refresh()
             return token
-
+    
+    def get_tokens_by_userid(self, _user_id):
+        tokens = self.engine.query(OAuth2DynamoToken).filter(OAuth2DynamoToken.user_id == _user_id).index('user-index')
+        if not tokens:
+            raise InvalidTokenError()
+        else:
+            # refresh gets fields not projected by index
+            for token in tokens:
+                token.refresh()
+            return tokens
+    
+    def delete_tokens_by_userid(self, _user_id):
+        self.engine.query(OAuth2DynamoToken).filter(OAuth2DynamoToken.user_id == _user_id).index('user-index').delete()
+    
     def delete_token(self, _access_token):
         self.engine.delete_key(OAuth2DynamoToken, access_token=_access_token)
 

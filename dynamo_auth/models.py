@@ -20,7 +20,8 @@ class OAuth2DynamoToken(Model):
     """ Dynamo version of authlib.integrations.sqla_oauth2.OAuth2TokenMixin """
     __metadata__ = {
         'global_indexes': [
-            GlobalIndex.keys('refresh-index', 'refresh_token').throughput(read=10, write=2)
+            GlobalIndex.keys('refresh-index', 'refresh_token').throughput(read=10, write=2),
+            GlobalIndex.keys('user-index', 'user_id').throughput(read=10, write=2)
         ],
     }
 
