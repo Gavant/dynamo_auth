@@ -6,7 +6,7 @@ from .models import OAuth2DynamoToken, OAuth2DynamoClient, DynamoPasswordResetTo
 class Dynamo():
     engine = Engine()
 
-    def init_engine(self, dy_region, use_local, local_port=8000, create_tables=False, client_id="CLIENT_ID", client_secret="secret", client_metadata=None):
+    def init_engine(self, dy_region, use_local, local_port=8000, create_tables=False, register_models=True, client_id="CLIENT_ID", client_secret="secret", client_metadata=None):
         # Create an engine and connect to an AWS region
         if use_local:
             self.engine.connect(host='localhost', port=local_port, region='', is_secure=False)
@@ -14,9 +14,10 @@ class Dynamo():
             self.engine.connect(region=dy_region, is_secure=False)
 
         # Register models with the engine so it can create the Dynamo table
-        self.engine.register(OAuth2DynamoToken)
-        self.engine.register(OAuth2DynamoClient)
-        self.engine.register(DynamoPasswordResetToken)
+        if register_models:
+            self.engine.register(OAuth2DynamoToken)
+            self.engine.register(OAuth2DynamoClient)
+            self.engine.register(DynamoPasswordResetToken)
 
         # Create the dynamo tables
         if create_tables:
